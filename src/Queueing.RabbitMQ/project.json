@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Queueing.Abstractions": "",
+    "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-*",
+    "Microsoft.Framework.Logging.Abstractions": "1.0.0-*"
+  },
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+        "RabbitMQ.Client": "3.5.6"
+      }
+    }
+  }
+}
