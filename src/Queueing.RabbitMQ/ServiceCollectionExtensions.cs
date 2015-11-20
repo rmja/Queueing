@@ -3,7 +3,7 @@ using Queueing.RabbitMQ;
 using System;
 using System.Linq;
 
-namespace Microsoft.Framework.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,13 +1,13 @@
 ﻿using MicroService.Startup;
-using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Framework.Configuration;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 using MicroService.Listener;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MicroService.Internal
 {

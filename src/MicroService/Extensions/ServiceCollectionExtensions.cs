@@ -1,9 +1,9 @@
 ﻿using MicroService.Listener;
 using MicroService.Middlewares;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Queueing;
 
-namespace MicroService
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {

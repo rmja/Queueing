@@ -1,11 +1,12 @@
 ﻿using System;
-using Microsoft.Framework.Configuration;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Dnx.Runtime;
 using MicroService.Startup;
 using MicroService.Internal;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace MicroService
 {
