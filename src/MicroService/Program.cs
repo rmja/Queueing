@@ -1,5 +1,4 @@
-﻿using Microsoft.Dnx.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +25,6 @@ namespace MicroService
 
         public void Main()
         {
-            //var appBasePath = _serviceProvider.GetRequiredService<IApplicationEnvironment>().ApplicationBasePath;
             var builder = new ConfigurationBuilder();
             var config = builder.Build();
 

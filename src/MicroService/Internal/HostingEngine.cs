@@ -21,14 +21,12 @@ namespace MicroService.Internal
         private readonly IConfiguration _config;
 
         private IServiceProvider _applicationServices;
+        private IEnumerable<IListenerEngine> _listeners;
 
         // Only one of these should be set.
         internal StartupMethods Startup { get; set; }
         internal Type StartupType { get; set; }
         internal string StartupAssemblyName { get; set; }
-
-        // Only one of these should be set
-        internal IListenerEngine Listener { get; set; }
 
         public HostingEngine(IServiceCollection appServices, StartupLoader startupLoader, IConfiguration config)
         {
@@ -54,18 +52,30 @@ namespace MicroService.Internal
 
             var logger = _applicationServices.GetRequiredService<ILogger<HostingEngine>>();
             var contextAccessor = _applicationServices.GetRequiredService<IMessageContextAccessor>();
-            var listener = Listener.Start(async features =>
-            {
-                var context = new MessageContext(features);
 
-                using (logger.BeginScope("Request"))
+            var disposeables = new List<IDisposable>();
+            foreach (var listener in _listeners)
+            {
+                var disposeable = listener.Start(async features =>
                 {
-                    contextAccessor.MessageContext = context;
-                    await application(context);
+                    var context = new MessageContext(features);
+
+                    using (logger.BeginScope("Request"))
+                    {
+                        contextAccessor.MessageContext = context;
+                        await application(context);
+                    }
+                });
+                disposeables.Add(disposeable);
+            }
+
+            return new Disposable(() =>
+            {
+                foreach (var disposeable in disposeables)
+                {
+                    disposeable.Dispose();
                 }
             });
-
-            return listener;
         }
 
         private void EnsureApplicationServices()
@@ -104,9 +114,9 @@ namespace MicroService.Internal
 
         private MicroServiceRequestDelegate BuildApplication()
         {
-            if (Listener == null)
+            if (_listeners == null)
             {
-                Listener = _applicationServices.GetRequiredService<IListenerEngine>();
+                _listeners = _applicationServices.GetRequiredService<IEnumerable<IListenerEngine>>();
             }
 
             var builder = new MicroServiceBuilder(_applicationServices);
