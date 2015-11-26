@@ -73,13 +73,15 @@ namespace MicroService.Listener
                                         break;
                                 }
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
+                                Console.WriteLine($"Application error: '{ex.Message}'.");
                                 consumer.Reject(consumed, false);
                             }
                         }
                     }
                 }
+                Console.WriteLine($"Stopped listening to {_queue.Name}.");
             });
 
             return this;
