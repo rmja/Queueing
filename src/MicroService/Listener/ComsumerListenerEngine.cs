@@ -46,6 +46,7 @@ namespace MicroService.Listener
                             {
                                 { "ApplicationServices", _applicationServices },
                                 { "RequestServices", scope.ServiceProvider },
+                                { "QueueName", _queue.Name },
                                 { "Route", consumed.Route },
                                 { "Body", consumed.Body }
                             });
