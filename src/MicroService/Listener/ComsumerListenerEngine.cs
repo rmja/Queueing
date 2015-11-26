@@ -32,6 +32,7 @@ namespace MicroService.Listener
         {
             _running = true;
             _task = Task.Run(async () => {
+                Console.WriteLine($"Listinging on {_queue.Name}");
                 while (_running)
                 {
                     using (var scope = _serviceScopeFactory.CreateScope())
@@ -41,7 +42,6 @@ namespace MicroService.Listener
 
                         if (consumed != null)
                         {
-
                             var features = new ComsumerListenerFeatures(new Dictionary<string, object>()
                             {
                                 { "ApplicationServices", _applicationServices },
@@ -50,25 +50,32 @@ namespace MicroService.Listener
                                 { "Body", consumed.Body }
                             });
 
-                            await application(features);
-
-                            var replyBody = features.ReplyBody();
-                            if (replyBody != null)
+                            try
                             {
-                                consumer.SendRepy(consumed, replyBody);
+                                await application(features);
+
+                                var replyBody = features.ReplyBody();
+                                if (replyBody != null)
+                                {
+                                    consumer.SendRepy(consumed, replyBody);
+                                }
+
+                                switch (features.Ack())
+                                {
+                                    case AckType.Ack:
+                                        consumer.Ack(consumed);
+                                        break;
+                                    case AckType.RejectButRequeue:
+                                        consumer.Reject(consumed, true);
+                                        break;
+                                    case AckType.Reject:
+                                        consumer.Reject(consumed, false);
+                                        break;
+                                }
                             }
-
-                            switch (features.Ack())
+                            catch (Exception)
                             {
-                                case AckType.Ack:
-                                    consumer.Ack(consumed);
-                                    break;
-                                case AckType.RejectButRequeue:
-                                    consumer.Reject(consumed, true);
-                                    break;
-                                case AckType.Reject:
-                                    consumer.Reject(consumed, false);
-                                    break;
+                                consumer.Reject(consumed, false);
                             }
                         }
                     }

@@ -62,8 +62,18 @@ namespace MicroService.Internal
 
                     using (logger.BeginScope("Request"))
                     {
+                        logger.LogDebug($"Processing request received on route {context.Route}.");
                         contextAccessor.MessageContext = context;
-                        await application(context);
+
+                        try
+                        {
+                            await application(context);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogCritical("Unhandled request error", ex);
+                            throw;
+                        }
                     }
                 });
                 disposeables.Add(disposeable);
