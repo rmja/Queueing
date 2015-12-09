@@ -15,7 +15,6 @@ namespace MicroService.Listener
     public class ComsumerListenerEngine<TQueue> : IListenerEngine, IDisposable
         where TQueue : IQueue, new()
     {
-        private readonly IConsumer _consumer;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IServiceProvider _applicationServices;
         private Task _task;
@@ -23,9 +22,8 @@ namespace MicroService.Listener
 
         private static TQueue _queue = new TQueue();
 
-        public ComsumerListenerEngine(IConsumer consumer, IServiceScopeFactory serviceScopeFactory, IServiceProvider applicationServices)
+        public ComsumerListenerEngine(IServiceScopeFactory serviceScopeFactory, IServiceProvider applicationServices)
         {
-            _consumer = consumer;
             _serviceScopeFactory = serviceScopeFactory;
             _applicationServices = applicationServices;
         }
@@ -34,46 +32,57 @@ namespace MicroService.Listener
         {
             _running = true;
             _task = Task.Run(async () => {
-
+                Console.WriteLine($"Listinging on {_queue.Name}");
                 while (_running)
                 {
-                    var consumed = _consumer.Consume(_queue, TimeSpan.FromMilliseconds(500));
-
-                    if (consumed != null)
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        using (var scope = _serviceScopeFactory.CreateScope())
+                        var consumer = scope.ServiceProvider.GetRequiredService<IConsumer>();
+                        var consumed = consumer.Consume(_queue, TimeSpan.FromMilliseconds(1000));
+
+                        if (consumed != null)
                         {
                             var features = new ComsumerListenerFeatures(new Dictionary<string, object>()
+                            {
+                                { "ApplicationServices", _applicationServices },
+                                { "RequestServices", scope.ServiceProvider },
+                                { "QueueName", _queue.Name },
+                                { "Route", consumed.Route },
+                                { "Body", consumed.Body }
+                            });
+
+                            try
+                            {
+                                await application(features);
+
+                                var replyBody = features.ReplyBody();
+                                if (replyBody != null)
                                 {
-                                    { "ApplicationServices", _applicationServices },
-                                    { "RequestServices", scope.ServiceProvider },
-                                    { "Route", consumed.Route },
-                                    { "Body", consumed.Body }
-                                });
+                                    consumer.SendRepy(consumed, replyBody);
+                                }
 
-                            await application(features);
-                            
-                            var replyBody = features.ReplyBody();
-                            if (replyBody != null)
-                            {
-                                _consumer.SendRepy(consumed, replyBody);
+                                switch (features.Ack())
+                                {
+                                    case AckType.Ack:
+                                        consumer.Ack(consumed);
+                                        break;
+                                    case AckType.RejectButRequeue:
+                                        consumer.Reject(consumed, true);
+                                        break;
+                                    case AckType.Reject:
+                                        consumer.Reject(consumed, false);
+                                        break;
+                                }
                             }
-
-                            switch (features.Ack())
+                            catch (Exception ex)
                             {
-                                case AckType.Ack:
-                                    _consumer.Ack(consumed);
-                                    break;
-                                case AckType.RejectButRequeue:
-                                    _consumer.Reject(consumed, true);
-                                    break;
-                                case AckType.Reject:
-                                    _consumer.Reject(consumed, false);
-                                    break;
+                                Console.WriteLine($"Application error: '{ex.Message}'.");
+                                consumer.Reject(consumed, false);
                             }
                         }
                     }
                 }
+                Console.WriteLine($"Stopped listening to {_queue.Name}.");
             });
 
             return this;

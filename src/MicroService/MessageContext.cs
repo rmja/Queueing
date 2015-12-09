@@ -12,6 +12,7 @@ namespace MicroService
 
         public IServiceProvider ApplicationServices => _features.Get<IServiceProvider>("ApplicationServices");
         public IServiceProvider RequestServices => _features.Get<IServiceProvider>("RequestServices");
+        public string QueueName => _features.Get<string>("QueueName");
         public string Route => _features.Get<string>("Route");
         public byte[] Body => _features.Get<byte[]>("Body");
 

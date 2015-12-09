@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>d4a5d2e9-3c13-48d1-8cbd-6d069cf81af5</ProjectGuid>
+    <ProjectGuid>a7c0892b-526d-4b26-8556-2ba3d2b3ba45</ProjectGuid>
     <RootNamespace>Queueing.RabbitMQ</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>

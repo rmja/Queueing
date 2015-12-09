@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Dnx.Runtime;
 using MicroService.Startup;
 using MicroService.Internal;
 using Microsoft.Extensions.PlatformAbstractions;

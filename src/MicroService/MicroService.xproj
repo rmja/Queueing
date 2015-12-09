@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>d0178443-dcaf-4e50-ac1c-d7238f17a94b</ProjectGuid>
+    <ProjectGuid>9c4d9c5e-64d4-45dc-85b5-738b65b6e006</ProjectGuid>
     <RootNamespace>MicroService</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
