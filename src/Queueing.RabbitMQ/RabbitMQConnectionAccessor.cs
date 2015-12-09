@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using Microsoft.Extensions.OptionsModel;
 
 namespace Queueing.RabbitMQ
 {
@@ -10,11 +11,13 @@ namespace Queueing.RabbitMQ
     {
         public IConnection Connection { get; private set; }
 
-        public RabbitMQConnectionAccessor()
+        public RabbitMQConnectionAccessor(IOptions<RabbitMQOptions> options)
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost"
+                HostName = options.Value.Hostname,
+                UserName = options.Value.Username,
+                Password = options.Value.Password
             };
 
             Connection = factory.CreateConnection();
