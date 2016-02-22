@@ -1,4 +1,5 @@
 ﻿#if DNX451
+using Microsoft.Extensions.OptionsModel;
 using RabbitMQ.Client;
 #endif
 using System;
@@ -12,11 +13,13 @@ namespace Queueing.RabbitMQ
 		private readonly IConnection _connection;
 		private readonly IModel _model;
         
-        public RabbitMQBroker()
+        public RabbitMQBroker(IOptions<RabbitMQOptions> options)
         {
-			var factory = new ConnectionFactory()
-			{
-				HostName = "localhost"
+            var factory = new ConnectionFactory()
+            {
+                HostName = options.Value.Hostname,
+                UserName = options.Value.Username,
+                Password = options.Value.Password
 			};
 
 			_connection = factory.CreateConnection();

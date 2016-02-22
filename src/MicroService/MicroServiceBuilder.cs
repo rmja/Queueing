@@ -33,7 +33,7 @@ namespace MicroService
                 throw new Exception(string.Format("No middleware registered for route '{0}'.", context.Route));
             };
 
-            foreach (var component in _components)
+            foreach (var component in _components.Reverse())
             {
                 app = component(app);
             }

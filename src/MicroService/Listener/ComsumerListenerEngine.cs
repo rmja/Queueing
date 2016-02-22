@@ -33,14 +33,15 @@ namespace MicroService.Listener
             _running = true;
             _task = Task.Run(async () => {
                 Console.WriteLine($"Listinging on {_queue.Name}");
+
+                var consumer = _applicationServices.GetRequiredService<IConsumer>();
                 while (_running)
                 {
-                    using (var scope = _serviceScopeFactory.CreateScope())
-                    {
-                        var consumer = scope.ServiceProvider.GetRequiredService<IConsumer>();
-                        var consumed = consumer.Consume(_queue, TimeSpan.FromMilliseconds(1000));
+                    var consumed = consumer.Consume(_queue, TimeSpan.FromMilliseconds(1000));
 
-                        if (consumed != null)
+                    if (consumed != null)
+                    {
+                        using (var scope = _serviceScopeFactory.CreateScope())
                         {
                             var features = new ComsumerListenerFeatures(new Dictionary<string, object>()
                             {
@@ -55,13 +56,13 @@ namespace MicroService.Listener
                             {
                                 await application(features);
 
-                                var replyBody = features.ReplyBody();
+                                var replyBody = features.TryGetReplyBody();
                                 if (replyBody != null)
                                 {
                                     consumer.SendRepy(consumed, replyBody);
                                 }
 
-                                switch (features.Ack())
+                                switch (features.GetAck())
                                 {
                                     case AckType.Ack:
                                         consumer.Ack(consumed);

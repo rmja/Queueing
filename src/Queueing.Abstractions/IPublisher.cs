@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Queueing
+﻿namespace Queueing
 {
     public interface IPublisher
 	{

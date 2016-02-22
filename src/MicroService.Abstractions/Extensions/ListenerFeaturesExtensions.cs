@@ -7,12 +7,12 @@ namespace MicroService.Listener
 {
     public static class ListenerFeaturesExtensions
     {
-        public static AckType Ack(this IListenerFeatures self)
+        public static AckType GetAck(this IListenerFeatures self)
         {
             return self.TryGet<AckType?>("Ack") ?? AckType.Ack;
         }
 
-        public static byte[] ReplyBody(this IListenerFeatures self)
+        public static byte[] TryGetReplyBody(this IListenerFeatures self)
         {
             return self.TryGet<byte[]>("ReplyBody");
         }
