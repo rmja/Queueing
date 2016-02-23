@@ -28,7 +28,7 @@ namespace Queueing.RabbitMQ
                 _queue = queue;
 
                 _rabbitConsumer = new QueueingBasicConsumer(_model);
-                _model.BasicQos(0, 1, false);
+                _model.BasicQos(0, 1000, false);
                 _model.BasicConsume(queue.Name, false, _rabbitConsumer);
             }
             else if (_queue != queue)
