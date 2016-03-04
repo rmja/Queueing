@@ -18,7 +18,7 @@ namespace Queueing.RabbitMQ
 			_model = connectionAccessor.Connection.CreateModel();
 		}
 
-		public void Publish(IExchange exchange, IMessage message, string route)
+		public void Publish(IExchange exchange, object message, string route)
 		{
             var body = _converter.Serialize(message);
 
