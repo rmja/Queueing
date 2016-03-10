@@ -41,7 +41,7 @@ namespace MicroService.Middlewares
 
         public async Task Invoke(MessageContext context, IServiceProvider services, IMessageConverter messageConverter)
         {
-            if ((_options.QueueName == null || _options.QueueName == context.QueueName) && (_options.Routes == null || _options.Routes.Any(pattern => RouteMatching.RouteMatchesPattern(context.Route, pattern))))
+            if (_options.Routes == null || _options.Routes.Any(pattern => RouteMatching.RouteMatchesPattern(context.Route, pattern)))
             {
                 var handler = services.GetRequiredService(_options.HandlerType);
 
