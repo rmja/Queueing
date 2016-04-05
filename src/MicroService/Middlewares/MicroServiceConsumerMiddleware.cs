@@ -37,52 +37,15 @@ namespace MicroService.Middlewares
             }
         }
 
-        private static bool RouteMatchesPattern(string route, string pattern)
-        {
-            if (route == pattern)
-            {
-                return true;
-            }
-
-            var routeParts = route.Split('.');
-            var patternParts = pattern.Split('.');
-
-            for (var i = 0; i < patternParts.Length; i++)
-            {
-                var patternPart = patternParts[i];
-
-                if (patternPart == "#")
-                {
-                    return true;
-                }
-                else if (i < routeParts.Length)
-                {
-                    if (routeParts[i] == patternPart || patternPart == "*")
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            
-            return true;
-        }
+       
 
         public async Task Invoke(MessageContext context, IServiceProvider services, IMessageConverter messageConverter)
         {
-            if ((_options.QueueName == null || _options.QueueName == context.QueueName) && (_options.Routes == null || _options.Routes.Any(pattern => RouteMatchesPattern(context.Route, pattern))))
+            if (_options.Routes == null || _options.Routes.Any(pattern => RouteMatching.RouteMatchesPattern(context.Route, pattern)))
             {
                 var handler = services.GetRequiredService(_options.HandlerType);
 
                 var parameters = _handleMethodInfo.GetParameters();
-                
 
                 if (!parameters[0].ParameterType.GetTypeInfo().IsAssignableFrom(_options.MessageType))
                 {

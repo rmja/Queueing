@@ -4,7 +4,7 @@ namespace Queueing
 {
     public interface IMessageConverter
     {
-		byte[] Serialize(IMessage message);
+		byte[] Serialize(object message);
         IMessage Deserialize(byte[] body, Type type);
     }
 

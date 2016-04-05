@@ -10,7 +10,6 @@ namespace MicroService.Middlewares
     {
         public Type HandlerType { get; set; }
         public Type MessageType { get; set; }
-        public string QueueName { get; set; }
         public string[] Routes { get; set; }
     }
 }

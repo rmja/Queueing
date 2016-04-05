@@ -9,7 +9,7 @@ namespace MicroService
 {
     /// <summary>
     /// https://github.com/aspnet/HttpAbstractions/blob/dev/src/Microsoft.AspNet.Http.Abstractions/Extensions/UseExtensions.cs
-    /// https://github.com/aspnet/HttpAbstractions/blob/dev/src/Microsoft.AspNet.Http.Abstractions/Extensions/UseMiddlewareExtensions.cs
+    /// https://github.com/aspnet/HttpAbstractions/blob/dev/src/Microsoft.AspNetCore.Http.Abstractions/Extensions/UseMiddlewareExtensions.cs
     /// </summary>
     public static class MicroserviceApplicationBuilderUseExtensions
     {

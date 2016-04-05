@@ -18,21 +18,27 @@ namespace Queueing.RabbitMQ
 			_model = connectionAccessor.Connection.CreateModel();
 		}
 
-		public void Publish(IExchange exchange, IMessage message, string route)
+		public void Publish(IExchange exchange, object message, string route)
 		{
-			var properties = _model.CreateBasicProperties();
+            var body = _converter.Serialize(message);
 
-			properties.Persistent = true;
-
-			var body = _converter.Serialize(message);
-			_model.BasicPublish(exchange.Name, route, properties, body);
+            PublishRaw(exchange, body, route);
 		}
 
-		public void Dispose()
+        public void PublishRaw(IExchange exchange, byte[] body, string route)
+        {
+            var properties = _model.CreateBasicProperties();
+
+            properties.Persistent = true;
+
+            _model.BasicPublish(exchange.Name, route, properties, body);
+        }
+
+        public void Dispose()
 		{
 			_model.Dispose();
 		}
-	}
+    }
 #else
     public class RabbitMQPublisher : IPublisher, IDisposable
     {
